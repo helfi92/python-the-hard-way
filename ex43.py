@@ -5,7 +5,7 @@ from random import randint
 class Scene(object):
 	def enter(self):
 		print "This scene is not yet configured. Subclass it and implement enter()"
-			exit(1)
+		exit(1)
 
 class Engine(object):
 	def __init__(self,scene_map):
@@ -56,28 +56,88 @@ class CentralCorridor(Scene):
 		else:
 			print "DOES NOT COMPUTE!"
 			return 'cemtral_corridor'
-		
+
 
 class LaserWeaponArmory(Scene):
 	def enter(self):
-		pass
+		print "You do a dive roll into the Weapon Armory, crouch and scan the room"
+		print "for more Gothons that might be hiding"
+		print "the code of the bomb is 3 digits"
+		code = "%d%d%d" % (randint(1,9), randint(1,9), randint(1,9) )
+		guess = raw_input("[keypad]> ")
+		guesses = 0
+
+		while guess != code and guesses < 10:
+			print "BZZZZEDDD!"
+			guesses +=1
+			guess = raw_input("keypad]> ")
+
+			if guess == code:
+				print "The container clicks open and the seal breaks, letting gas out."
+				print "You grab the neutron bomb and run as fast as you can to the"
+				print "bridge where you must place it in the right spot."
+				return 'death'
+			else:
+				print 'oups, you die'
+				return 'death'
+
 
 class TheBridge(Scene):
 	def enter(self):
-		pass
+		print "You burst onto the Bridge with the neutron destruct bomb"
+		print "under your arm and surprise 5 Gothons who are trying to"
+		print "take control of the ship. Each of them has an even uglier"
+		print "clown costume than the last. They haven't pulled their"
+		print "weapons out yet, as they see the active bomb under your"
+		print "arm and don't want to set it off."
+
+		action = raw_input("> ")
+
+		if action == "throw the bomb":
+			print "you die"
+			return 'death'
+		elif action == "slowly place the bomb":
+			print "Now that the bomb is placed you run to the escape pod to"
+			print "get off this tin can."
+			return 'escape_pod'
+		else:
+			print "DOES NOT COMPUTE"
+			return "the_bridge"	
 
 class EscapePod(Scene):
 	def enter(self):
-		pass
+		print "You rush through the ship desperately trying to make it to"
+		print "the escape pod before the whole ship explodes"
+		print "bout you don't have time to look. There's 5 pods, which one do you take?"
+
+		good_pod = randint(1,5)
+		guess = raw_input("[ipod #]> ")
+
+		if int(guess) != good_pod:
+			print "you jump into your own death"
+			return 'death'
+		else:
+			print "Fantastic! you are done your mission"
+			return 'finished'
+
 
 class Map(object):
+	
+	scenes = {
+		'central_corridor' : CentralCorridor(),
+		'laser_weapon_armory' : LaserWeaponArmory(),
+		'the_bridge' : TheBridge(),
+		'escape_pod' : EscapePod(),
+		'death' : Death()
+	}
+
 	def __init__(self, start_scene):
-		pass
+		self.start_scene = start_scene
 
 	def next_scene(self, scene_name):
-		pass
+		return Map.scenes.get(scene_name)
 	def opening_scene(self):
-		pass
+		return self.next_scene(self.start_scene)
 
 a_map = Map('central_corridor')
 a_game = Engine(a_map)
