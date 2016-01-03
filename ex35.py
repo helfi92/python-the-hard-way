@@ -55,6 +55,7 @@ def start():
 	print "Which one do you take?"
 
 	next = raw_input("> ")
+	
 	if next == "left":
 		bear_room()
 	elif next == "right":
